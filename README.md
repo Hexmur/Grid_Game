@@ -24,7 +24,7 @@ git clone [https://github.com/your-username/Gird_Game.git](https://github.com/yo
 cd Grid_Game
 
 # 3. Compile the game
-gcc Grid_Game.c -o GridGame
+gcc Grid.c -o GridGame
 
 # 4. Run the game
 ./GridGame
