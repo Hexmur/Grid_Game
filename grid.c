@@ -39,12 +39,14 @@ void print_grid(char *grid, int player_pos){
   printf("+---+---+---+---+\n");
 }
 
+
 void print_title_screen(){
   printf("\x1b[H\x1b[2J\x1b[3J"); // clear screen
   printf("Welcome to the grid_game!\nPress enter to start ");
   int temp;
   while((temp = getchar()) != '\n' && temp != EOF);
 }
+
 
 void print_shop(char *array, int current_shop_items){
   printf("Current shop items %d\n", current_shop_items);
@@ -56,12 +58,34 @@ void print_shop(char *array, int current_shop_items){
 }
 
 
+void print_game_stats(int monster_rate, int level, int player_life,int max_health, int player_coins){
+
+  printf("\x1b[H\x1b[2J\x1b[3J"); // clear screen
+  printf("Shop\n\n"); 
+
+  printf("Monsters Spawn Rate: %d\n", monster_rate);        
+  printf("Level %d\n", level);        
+
+  printf("%d/%d HP [ ", player_life, max_health);
+  for(int i=0; i < player_life; i++){
+    printf("♥ ");
+  }
+  for(int j=0; j < max_health - player_life; j++){
+    printf("▢ ");
+  }
+
+  printf("%d coins\n\n", player_coins);
+  
+}
+
+
+
 int main(void){
   srand(time(NULL));   
   char buffer[64];
   int choice = 0;
-  int random_tmp;
-  int random_col;
+  int random_tmp = 0;
+  int random_col = 0;
   int row = 0;
   int turn_goal = 6;
   int max_health = 4;
@@ -82,11 +106,11 @@ int main(void){
     for(int level=0; ; level++){
       monster_rate++; // increments by 1 every level
 
-      // Shop every 2 levels        
-      if(level%2 == 0 && level != 0){
+      // Shop appears every 2 levels        
+      if(level%2 == 0){// && level != 0){
         int current_shop_items = shopMaxItems;
 
-
+        // Generate the shop items
         for(int i=0; i<shopMaxItems; i++){
           random_tmp = rand() % 2;
           if(random_tmp == 0){
@@ -98,27 +122,10 @@ int main(void){
 
         buy_something:{
 
-          printf("\x1b[H\x1b[2J\x1b[3J"); // clear screen
-          printf("Shop\n\n"); 
-
-          printf("Monsters Spawn Rate: %d\n", monster_rate);        
-          printf("Level %d\n", level);        
-
-          printf("%d/%d HP [ ", player_life, max_health);
-          for(int i=0; i < player_life; i++){
-            printf("♥ ");
-          }
-          for(int j=0; j < max_health - player_life; j++){
-            printf("▢ ");
-          }
-
-          printf("]\n");
-
-          printf("%d coins\n\n", player_coins);
-
-          //
+          print_game_stats(monster_rate, level, player_life, max_health, player_coins);
           
           print_shop(shopArray, current_shop_items);
+          
           printf("Do you want to buy something? [Y/N] \n");
           
           if(fgets(buffer, sizeof(buffer), stdin) == NULL){
@@ -191,23 +198,11 @@ int main(void){
       while(1){
         printf("\x1b[H\x1b[2J\x1b[3J"); // clear screen
         
-        printf("Monster Rate: %d\n", monster_rate);        
-        printf("Level %d\n", level);
+        print_game_stats(monster_rate, level, player_life, max_health, player_coins);
+
         printf("Turn %d\n", turn);
         printf("Next level at turn %d\n", turn_goal);        
 
-        printf("%d/%d HP [ ", player_life, max_health);
-        for(int i=0; i < player_life; i++){
-          printf("♥ ");
-        }
-        for(int j=0; j < max_health - player_life; j++){
-          printf("▢ ");
-        }
-
-        printf("]\n");
-
-        printf("%d coins\n", player_coins);
-      
         print_grid(grid, player_pos);
         
         if(turn >= turn_goal){
